@@ -1,0 +1,7 @@
+lamp:
+  container_name: my_lamp
+  build: .
+  ports:
+    - 80:80
+    - 3306:3306
+    
