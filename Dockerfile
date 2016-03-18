@@ -21,6 +21,17 @@ ADD my.cnf /etc/mysql/conf.d/my.cnf
 ADD supervisord-apache2.conf /etc/supervisor/conf.d/supervisord-apache2.conf
 ADD supervisord-mysqld.conf /etc/supervisor/conf.d/supervisord-mysqld.conf
 
+#install phalcon
+WORKDIR /tmp
+RUN /usr/bin/git clone https://github.com/phalcon/cphalcon.git && \
+    cd cphalcon/build/ && \
+    ./install && \
+    cd /tmp && \
+    /bin/rm -rf /tmp/cphalcon/
+
+RUN /bin/echo 'extension=phalcon.so' >/etc/php5/mods-available/phalcon.ini
+RUN /usr/sbin/php5enmod phalcon
+
 # Remove pre-installed database
 RUN rm -rf /var/lib/mysql/*
 
