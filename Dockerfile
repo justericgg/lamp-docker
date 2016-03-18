@@ -4,7 +4,7 @@ MAINTAINER Fernando Mayo <fernando@tutum.co>, Feng Honglin <hfeng@tutum.co>
 # Install packages
 ENV DEBIAN_FRONTEND noninteractive
 RUN apt-get update && \
-  apt-get -y install supervisor git apache2 libapache2-mod-php5 mysql-server php5-mysql pwgen php-apc php5-mcrypt && \
+  apt-get -y install supervisor git apache2 libapache2-mod-php5 mysql-server php5-mysql pwgen php-apc php5-mcrypt php5-xdebug php5-dev libpcre3-dev gcc make && \
   echo "ServerName localhost" >> /etc/apache2/apache2.conf
 
 #Environment variables to configure php
@@ -23,14 +23,15 @@ ADD supervisord-mysqld.conf /etc/supervisor/conf.d/supervisord-mysqld.conf
 
 #install phalcon
 WORKDIR /tmp
-RUN /usr/bin/git clone https://github.com/phalcon/cphalcon.git
-RUN cd cphalcon/build/
-RUN ./install
-RUN cd /tmp
-RUN /bin/rm -rf /tmp/cphalcon/
+RUN /usr/bin/git clone https://github.com/phalcon/cphalcon.git && \
+    cd cphalcon/build/ && \
+    ./install && \
+    cd /tmp && \
+    /bin/rm -rf /tmp/cphalcon/
 
-RUN /bin/echo 'extension=phalcon.so' > /etc/php5/mods-available/phalcon.ini
+RUN /bin/echo 'extension=phalcon.so' >/etc/php5/mods-available/phalcon.ini
 RUN /usr/sbin/php5enmod phalcon
+
 
 # Remove pre-installed database
 RUN rm -rf /var/lib/mysql/*
